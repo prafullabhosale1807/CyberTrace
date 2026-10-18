@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberTrace | Digital Forensics</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+
+    <!-- ========================= LOGIN ========================= -->
+    <section id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-brand">◈ CyberTrace</div>
+            <p class="side-label">DIGITAL FORENSICS CONSOLE</p>
+            <h1>Secure Login</h1>
+            <p class="muted">Connect to the CyberTrace Flask backend.</p>
+
+            <form id="loginForm">
+                <label for="username">Username</label>
+                <input id="username" type="text" autocomplete="username"
+                       placeholder="Enter username" required>
+
+                <label for="password">Password</label>
+                <input id="password" type="password" autocomplete="current-password"
+                       placeholder="Enter password" required>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <div id="loginResult" class="result" aria-live="polite">
+                Enter your CyberTrace credentials.
+            </div>
+
+            <div class="login-help">
+                <strong>Demo accounts</strong>
+                <span>Admin: admin / admin123</span>
+                <span>Investigator: investigator / investigator123</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================= APPLICATION ========================= -->
+    <div id="appShell" class="app-shell hidden">
+
+        <aside class="sidebar">
+            <div class="brand">◈ CyberTrace</div>
+            <p class="side-label">FORENSICS CONSOLE</p>
+
+            <a href="#dashboard" class="nav-link active">▦ Dashboard</a>
+            <a href="#monitor" class="nav-link">◈ File Monitoring</a>
+            <a href="#evidence" class="nav-link">▤ Evidence Records</a>
+
+            <div class="sidebar-user">
+                <span id="loggedUser">User</span>
+                <small id="loggedRole">ROLE</small>
+            </div>
+
+            <div class="sidebar-bottom">
+                <span class="online-dot"></span> Flask Backend Connected
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main" id="dashboard">
+
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">DIGITAL FORENSICS / OVERVIEW</p>
+                    <h1>Integrity Dashboard</h1>
+                </div>
+
+                <div class="topbar-actions">
+                    <button id="refreshBtn" class="secondary">Refresh</button>
+                    <span class="status-badge">● BACKEND ONLINE</span>
+                </div>
+            </header>
+
+            <section class="welcome">
+                <div>
+                    <p class="eyebrow">FILE INTEGRITY & DIGITAL EVIDENCE</p>
+                    <h2>Monitor. Verify. Preserve.</h2>
+                    <p>
+                        Register a baseline on the Flask server, calculate
+                        SHA-256, and detect changes using the SQLite database.
+                    </p>
+                </div>
+                <div class="hero-icon">◈</div>
+            </section>
+
+            <section class="stats">
+                <article class="stat-card">
+                    <p>MONITORED FILES</p>
+                    <h2 id="totalFiles">0</h2>
+                    <span>Registered baselines</span>
+                </article>
+
+                <article class="stat-card">
+                    <p>VERIFIED FILES</p>
+                    <h2 id="verifiedFiles">0</h2>
+                    <span>Currently safe</span>
+                </article>
+
+                <article class="stat-card">
+                    <p>INTEGRITY ALERTS</p>
+                    <h2 id="alertFiles">0</h2>
+                    <span>Modified files</span>
+                </article>
+
+                <article class="stat-card">
+                    <p>EVIDENCE RECORDS</p>
+                    <h2 id="totalRecords">0</h2>
+                    <span>Backend records</span>
+                </article>
+            </section>
+
+            <!-- ========================= MONITOR ========================= -->
+            <section class="panel" id="monitor">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">SHA-256 ANALYSIS</p>
+                        <h2>File Integrity Monitor</h2>
+                    </div>
+                    <span class="small-badge">SERVER-SIDE HASHING</span>
+                </div>
+
+                <p class="muted">
+                    Select a file from your device. Register stores a protected
+                    baseline on the Flask server. Verify uploads the current
+                    copy and compares its SHA-256 hash with the saved baseline.
+                </p>
+
+                <label class="upload-box" for="fileInput">
+                    <span class="upload-icon">↑</span>
+                    <strong>Select a file for analysis</strong>
+                    <span id="fileName">Choose a file from your device</span>
+                    <input type="file" id="fileInput">
+                </label>
+
+                <div class="button-row">
+                    <button id="registerBtn">Register Baseline</button>
+                    <button id="verifyBtn" class="secondary">
+                        Verify Integrity
+                    </button>
+                </div>
+
+                <div class="hash-box">
+                    <p class="eyebrow">SHA-256 HASH FROM FLASK BACKEND</p>
+                    <code id="hashOutput">No file analyzed yet.</code>
+                    <button id="copyHash" class="copy-btn">Copy Hash</button>
+                </div>
+
+                <div id="analysisResult" class="result" aria-live="polite">
+                    Awaiting file selection.
+                </div>
+            </section>
+
+            <!-- ========================= FILES ========================= -->
+            <section class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">DATABASE</p>
+                        <h2>Monitored Files</h2>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>File</th>
+                                <th>Status</th>
+                                <th>Original SHA-256</th>
+                                <th>Current SHA-256</th>
+                            </tr>
+                        </thead>
+                        <tbody id="filesTable">
+                            <tr>
+                                <td colspan="5" class="empty">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ========================= EVIDENCE ========================= -->
+            <section class="panel" id="evidence">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">AUDIT TRAIL</p>
+                        <h2>Digital Evidence Records</h2>
+                    </div>
+                    <button id="exportBtn" class="secondary">
+                        Export Log
+                    </button>
+                </div>
+
+                <p class="muted">
+                    Records are loaded from the CyberTrace SQLite database.
+                    Integrity violations preserve the old and new hashes.
+                </p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>File</th>
+                                <th>SHA-256</th>
+                                <th>Event</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="evidenceTable">
+                            <tr>
+                                <td colspan="5" class="empty">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <footer>
+                CyberTrace · Academic Project ·
+                File Integrity & Digital Evidence Monitoring
+            </footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

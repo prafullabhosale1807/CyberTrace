@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Runtime data (created locally)
+backend/database/*.db
+backend/evidence_files/*
+!backend/evidence_files/.gitkeep
+!backend/database/.gitkeep
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
